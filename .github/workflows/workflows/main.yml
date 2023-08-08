@@ -1,0 +1,22 @@
+name: Application Checks
+on:
+  pull_request:
+jobs:
+  test:
+    name: Check Linter on Code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install packages
+        run: python3 -m pip install -r requirements.txt
+      - name: Check linting with Black
+        run: bash ./ci_scripts/lint_check.sh
+  test2:
+    name: Run app tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install packages
+        run: python3 -m pip install -r requirements.txt
+      - name: Run Repo Tests
+        run: python3 -m pytest
