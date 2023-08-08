@@ -18,7 +18,7 @@ def start_button_state():
     if len(file_name) > 0 and output_locatin_selected and output_type_selected:
         start_button['state'] = tk.NORMAL
         start_button['fg'] = 'green'
-    else: 
+    else:
         start_button['state'] = tk.DISABLED
         start_button['bg'] = 'white'
 
@@ -54,7 +54,7 @@ def toggle_delete(_):
     if len(input_table.selection()) > 0:
         file_delete_button['state'] = tk.NORMAL
         file_delete_button['fg'] = 'red'
-    else: 
+    else:
         file_delete_button['state'] = tk.DISABLED
         file_delete_button['bg'] = 'white'
     start_button_state()
@@ -96,7 +96,7 @@ def populate_output_table():
     for file in output_files:
         insert_to_output_table(clean_string_for_table_insert(file),
                                f"{output_location}/{file}")
-    
+
 
 def start_button_func():
     try:
@@ -135,7 +135,7 @@ window_height = int(window.winfo_screenmmheight())
 
 # -------------- Widgets --------------
 
-# :::::::::::::::::: Frames :::::::::::::::::: 
+# :::::::::::::::::: Frames ::::::::::::::::::
 
 
 # Instructions Frame
@@ -169,7 +169,7 @@ placeholder_frame.pack_propagate(False)
 # Table Label Frame
 table_label_frame = tk.Frame(placeholder_frame,
                              width=int(window_width*1.2),
-                             height=40, 
+                             height=40,
                              relief='groove')
 
 table_label_frame.pack_propagate(False)
@@ -189,7 +189,7 @@ del_and_start_buttons_frame.pack_propagate(False)
 # Input Table Frame
 input_table_frame = tk.Frame(window)
 
-# :::::::::::::::::: Buttons :::::::::::::::::: 
+# :::::::::::::::::: Buttons ::::::::::::::::::
 
 # Get File Button
 get_files_button = tk.Button(setup_buttons_frame,
@@ -225,7 +225,7 @@ output_type_string = tk.StringVar()
 
 txt_radio_button = ttk.Radiobutton(radio_frame,
                                    text="Text Output",
-                                   value="txt", 
+                                   value="txt",
                                    variable=output_type_string,
                                    command=radio_button_func)
 csv_radio_button = ttk.Radiobutton(radio_frame,
@@ -235,7 +235,7 @@ csv_radio_button = ttk.Radiobutton(radio_frame,
                                    command=radio_button_func)
 
 
-# :::::::::::::::::: Treeview :::::::::::::::::: 
+# :::::::::::::::::: Treeview :::::::::::::::::
 # Input and Output Tables
 
 style = ttk.Style()
@@ -266,7 +266,7 @@ output_table.column('file',
                     width=15)
 
 
-# :::::::::::::::::: Labels :::::::::::::::::: 
+# :::::::::::::::::: Labels ::::::::::::::::::
 
 # Label for Directory
 directory_label_string = tk.StringVar()
