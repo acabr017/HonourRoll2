@@ -9,7 +9,10 @@ def utility():
 
 @pytest.fixture
 def save_directory():
-    os.makedirs('test/fixtures/output/test_outputs')
+    try:
+        os.makedirs('test/fixtures/output/test_outputs')
+    except:
+        pass
     return 'test/fixtures/output/test_outputs/'
 
 def test_final_file_cleanup(utility, save_directory):
