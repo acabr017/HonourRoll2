@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import csv
 
+
 class ExcelUtility:
     FILES = [
         "A Average Citizenship Honor Roll",
@@ -16,7 +17,7 @@ class ExcelUtility:
 
     DEFAULT_HEADER = ["STU ID", " GR-HR", "STUDENT NAME"]
 
-    def __init__(self, save_directory: str = '', filename: str = ''):
+    def __init__(self, save_directory: str = "", filename: str = ""):
         self.save_directory = save_directory.replace("/", "\\")
         self.filename = filename
 

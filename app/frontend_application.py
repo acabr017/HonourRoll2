@@ -18,6 +18,7 @@ output_location_selected = False
 output_type_selected = False
 get_files_path = "C://"
 
+
 # HELPERS
 def clean_string_for_table_insert(string_to_clean):
     return string_to_clean.split("/")[-1].replace(" ", "")
@@ -38,6 +39,7 @@ def get_filename(file_path_string: str):
 def make_new_dir(dir_path: str):
     if len(dir_path) > 0:
         os.makedirs(dir_path)
+
 
 def get_output_files():
     output_arr = []
@@ -150,6 +152,7 @@ def set_start_button_state():
         start_button["state"] = tk.DISABLED
         start_button["bg"] = "white"
 
+
 def radio_button_func():
     # Todo: remove global vars
     global output_type_selected, output_type
@@ -169,27 +172,19 @@ window.title("Val's App")
 
 # :::::::::::::::::: Frames ::::::::::::::::::
 # Instructions Frame
-instructions_frame = tk.Frame(
-    window, borderwidth=5, relief="groove"
-)
+instructions_frame = tk.Frame(window, borderwidth=5, relief="groove")
 
 # Setup Buttons Frame
-setup_buttons_frame = tk.Frame(
-    window, borderwidth=5
-)
+setup_buttons_frame = tk.Frame(window, borderwidth=5)
 
 # Output Files Label Frame
-output_files_label_frame = tk.Frame(
-    window, relief="groove"
-)
+output_files_label_frame = tk.Frame(window, relief="groove")
 
 # Frame to hold table label Frame
 placeholder_frame = tk.Frame(window)
 
 # Table Label Frame
-table_label_frame = tk.Frame(
-    placeholder_frame, relief="groove"
-)
+table_label_frame = tk.Frame(placeholder_frame, relief="groove")
 
 # Frame for Radio Buttons
 radio_frame = ttk.Frame(setup_buttons_frame)
