@@ -1,2 +1,4 @@
-*.xls
-*.xlsx
+/__pycache__/
+.idea
+/venv/
+/test/fixtures/output/*
