@@ -1,2 +1,4 @@
-*.xls
-*.xlsx
+/__pycache__/
+.vscode
+/venv/
+/test/fixtures/output/*
