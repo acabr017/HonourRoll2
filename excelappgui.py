@@ -5,17 +5,17 @@ from tkinter import messagebox
 import excel_converter as ec
 import os
 import errno
+from classes import Excel_app_helper
+from pathlib import Path
+import shutil
 
-file_name = ""
-output_location = ""
-output_type = ""
-output_locatin_selected = False
-output_type_selected = False
+
+files = Excel_app_helper()
 get_files_path = "C://"
 
 
 def start_button_state():
-    if len(file_name) > 0 and output_locatin_selected and output_type_selected:
+    if len(files.input_files) > 0 and files.out_location_bool and files.out_type_bool:
         start_button["state"] = tk.NORMAL
         start_button["fg"] = "green"
     else:
@@ -24,13 +24,13 @@ def start_button_state():
 
 
 def get_files_func():
-    global file_name
-    file_name = list(
+    files.input_files = list(
         filedialog.askopenfilenames(initialdir=get_files_path, title="Select File(s)")
     )
-    for file in file_name:
-        if file.endswith(".xls") or file.endswith(".xlsx"):
-            insert_to_input_table(clean_string_for_table_insert(file), file)
+    files.set_files_dict()
+    for file_name, path in files.files_dict.items():
+        if file_name.endswith(".xls") or file_name.endswith(".xlsx"):
+            insert_to_table("input", file_name, path)
         else:
             messagebox.showerror(
                 "Warning!", "Only .xls and .xlsx files accepted!", parent=window
@@ -38,20 +38,74 @@ def get_files_func():
     start_button_state()
 
 
-def clean_string_for_table_insert(string_to_clean):
-    return string_to_clean.split("/")[-1].replace(" ", "")
+def set_directory_func():
+    files.set_output_location(filedialog.askdirectory() + "/Output Files")
+    directory_label_string.set(files.output_location)
+    print(files.output_location)
+    start_button_state()
 
 
-def insert_to_input_table(f_name: str, f_path: str):
-    input_table.insert(parent="", index=tk.END, values=(f_name, f_path))
+def radio_button_func():
+    files.set_output_type(output_type_string.get())
+    start_button_state()
 
 
-def insert_to_output_table(f_name: str, f_path: str):
-    output_table.insert(parent="", index=tk.END, values=(f_name, f_path))
+def insert_to_table(table_type: str, f_name: str, f_path: str):
+    if table_type.lower() == "input":
+        input_table.insert(parent="", index=tk.END, values=(f_name, f_path))
+    elif table_type.lower() == "output":
+        output_table.insert(parent="", index=tk.END, values=(f_name, f_path))
+    else:
+        print("Invalid table type!")
+
+
+def start_button_func():
+    dirpath = Path(files.output_location)
+    if dirpath.exists() and dirpath.is_dir():
+        shutil.rmtree(dirpath)
+    try:
+        make_new_dir(files.output_location)
+    except OSError as exc:
+        if exc.errno != errno.EEXIST:
+            raise
+        pass
+    for file_name, path in files.files_dict.items():
+        converter = ec.Excel_convert(
+            files.output_location, file_name.split(".")[0], files.output_type
+        )
+        converter.create_output_files()
+        converter.do_conversion(path, files.output_type)
+
+    populate_output_table()
+
+
+def make_new_dir(dir_path: str):
+    os.makedirs(dir_path)
+
+
+def get_output_files():
+    return [
+        fn
+        for fn in os.listdir(files.output_location)
+        if (fn.lower().endswith(files.output_type) or fn.lower().endswith("txt"))
+        and os.path.isfile(os.path.join(files.output_location, fn))
+    ]
+
+
+def populate_output_table():
+    output_files = get_output_files()
+
+    print(output_files)
+    for file in output_files:
+        insert_to_table(
+            "output",
+            file,
+            f"{files.output_location}/{file}",
+        )
 
 
 def toggle_delete(_):
-    print(f"Event Triggered - Condition is {len(file_name) > 0}")
+    print(f"Event Triggered - argument is {_}")
     if len(input_table.selection()) > 0:
         file_delete_button["state"] = tk.NORMAL
         file_delete_button["fg"] = "red"
@@ -62,68 +116,10 @@ def toggle_delete(_):
 
 
 def delete_items(_):
+    print(f"Event Triggered - argument is {_}")
     for i in input_table.selection():
-        file_name.remove(input_table.item(i)["values"][1])
+        files.input_files.remove(input_table.item(i)["values"][1])
         input_table.delete(i)
-
-
-def set_directory_func():
-    global output_location, output_locatin_selected, directory_label_string
-    output_location = filedialog.askdirectory()
-    output_locatin_selected = True
-    output_location += "/Output Files"
-    directory_label_string.set(output_location)
-    start_button_state()
-    ec.set_save_directory(output_location)
-
-
-def get_filename(file_path_string: str):
-    return file_path_string.split("/")[-1].replace(" ", "").split(".")[0]
-
-
-def make_new_dir(dir_path: str):
-    os.makedirs(dir_path)
-
-
-def get_output_files():
-    return [
-        fn
-        for fn in os.listdir(output_location)
-        if fn.lower().endswith(output_type)
-        and os.path.isfile(os.path.join(output_location, fn))
-    ]
-
-
-def populate_output_table():
-    output_files = get_output_files()
-    print(output_files)
-    for file in output_files:
-        insert_to_output_table(
-            clean_string_for_table_insert(file), f"{output_location}/{file}"
-        )
-
-
-def start_button_func():
-    try:
-        make_new_dir(output_location)
-    except OSError as exc:
-        if exc.errno != errno.EEXIST:
-            raise
-        pass
-    for file in file_name:
-        ec.set_filename(get_filename(file))
-        ec.file_clean_up(output_type)
-        ec.convert_dataframe(ec.create_dataframes(file), output_type)
-        ec.Line_counter()
-        ec.final_file_clean_up(output_type)
-    populate_output_table()
-
-
-def radio_button_func():
-    global output_type_selected, output_type
-    output_type_selected = True
-    output_type = output_type_string.get()
-    start_button_state()
 
 
 # -------------- Window --------------
@@ -349,4 +345,5 @@ output_table.pack(padx=20, fill="x")
 
 
 # -------------- Run --------------
+
 window.mainloop()
