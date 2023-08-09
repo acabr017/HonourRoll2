@@ -174,7 +174,9 @@ radio_frame = ttk.Frame(setup_buttons_frame, width=200, height=80)
 radio_frame.pack_propagate(False)
 
 # Frame for Start and Delete Buttons
-del_and_start_buttons_frame = tk.Frame(window, width=570, height=50)
+del_and_start_buttons_frame = tk.Frame(
+    window, width=int(window_width * 1.2), height=50, relief="groove"
+)
 del_and_start_buttons_frame.pack_propagate(False)
 
 # Input Table Frame
@@ -337,8 +339,8 @@ input_table.pack(padx=20, fill="x")
 
 # 6th Frame
 del_and_start_buttons_frame.pack()
-start_button.pack(pady=10, side="left", expand=True)
-file_delete_button.pack(expand=True, side="left")
+start_button.pack(side="left", expand=True)
+file_delete_button.pack(expand=True, side="right")
 
 # Output Table
 output_table.pack(padx=20, fill="x")
