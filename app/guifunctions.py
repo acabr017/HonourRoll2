@@ -1,6 +1,6 @@
 from tkinter import filedialog
 from tkinter import messagebox
-import excel_converter as ec
+import app.excel_converter as ec
 import os
 import errno
 
