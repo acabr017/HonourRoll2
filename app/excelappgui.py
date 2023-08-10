@@ -148,7 +148,7 @@ instructions_frame = tk.Frame(
 
 # Setup Buttons Frame
 setup_buttons_frame = tk.Frame(
-    window, borderwidth=5, width=int(window_width * 1.2), height=100
+    window, borderwidth=5, width=int(window_width * 2), height=100
 )
 setup_buttons_frame.pack_propagate(False)
 
@@ -175,7 +175,7 @@ radio_frame.pack_propagate(False)
 
 # Frame for Start and Delete Buttons
 del_and_start_buttons_frame = tk.Frame(
-    window, width=int(window_width * 1.2), height=50, relief="groove"
+    window, width=int(window_width * 2), height=50, relief="groove"
 )
 del_and_start_buttons_frame.pack_propagate(False)
 
