@@ -3,7 +3,7 @@ import os
 import csv
 
 
-class Excel_convert:
+class ExcelConvert:
     """
 
     Args: output_path - Where the post-converted files will be created
@@ -11,18 +11,19 @@ class Excel_convert:
 
     """
 
+    FILES = [
+        "A Average Citizenship Honor Roll",
+        "Citizenship Honor Roll",
+        "Principal Honor Roll",
+        "Regular Honor Roll",
+        "Superior Honor Roll",
+        "totals",
+    ]
+
     def __init__(self, output_path: str, file_name: str, output_type: str):
         self.original_filename = file_name
         self.output_path = output_path
         self.output_type = output_type
-        self._files = [
-            "A Average Citizenship Honor Roll",
-            "Citizenship Honor Roll",
-            "Principal Honor Roll",
-            "Regular Honor Roll",
-            "Superior Honor Roll",
-            "totals",
-        ]
 
     def create_dataframes(self, filepath: str):
         return pd.read_excel(filepath, skiprows=7, header=None, sheet_name=None)
@@ -42,60 +43,57 @@ class Excel_convert:
         warning_page = False
         # If this is true, this page is a warning page. Do not record
         for index, row in enumerate(sheet_as_string_list):
-            if (
-                index == 0
+            if index != 0 and (
+                ("STU ID" not in row) and ("NaN" not in row)
             ):  # Skipping because the first element is blank for some reason.
-                continue
-            row = row[2:]
-            if "roll" in row.lower():
-                rollType = row[len(row) - 32 :: 1].strip().replace(" ", "").lower()
-                currentRoll = rollType
-                continue
-            if ("STU ID" in row) or ("NaN" in row):
-                continue
-            if "WARNING MESSAGES" in row:
-                warning_page = True
-            items = list(filter(lambda x: len(x) > 2, row.split("               ")))
-            if warning_page is False:
-                for val in items:
-                    print(
-                        f"{self.output_path+'/'+currentRoll+'_'+self.original_filename}.txt"
-                    )
-                    with open(
-                        f"{self.output_path+'/'+currentRoll+'_'+self.original_filename}.txt",
-                        "a",
-                    ) as f:
-                        print(val.strip(), file=f)
+                row = row[2:]
+                if "roll" in row.lower():
+                    rollType = row[len(row) - 32 :: 1].strip().replace(" ", "").lower()
+                    currentRoll = rollType
+                    continue
+                if "WARNING MESSAGES" in row:
+                    warning_page = True
+                items = list(filter(lambda x: len(x) > 2, row.split("               ")))
+                if warning_page is False:
+                    self.write_to_text(items, currentRoll)
+
+    def write_to_text(self, items: list, current_roll):
+        for val in items:
+            with open(
+                f"{self.output_path+'/'+current_roll+'_'+self.original_filename}.txt",
+                "a",
+            ) as f:
+                print(val.strip(), file=f)
 
     def Excel_to_csv(self, sheet_as_string: str):
         currentRoll = ""
         warning_page = False
         # If this is true, this page is a warning page. Do not record
         for index, row in enumerate(sheet_as_string):
-            if index == 0:
-                continue
-            row = row[2:]
-            if "roll" in row.lower():
-                rollType = row[len(row) - 32 :: 1].strip().replace(" ", "").lower()
-                currentRoll = rollType
-                continue
-            if ("STU ID" in row) or ("NaN" in row):
-                continue
-            if "WARNING MESSAGES" in row:
-                warning_page = True
-            items = list(filter(lambda x: len(x) > 2, row.split("               ")))
-            if warning_page is False:
-                filepath = (
-                    f"{self.output_path+'/'+currentRoll+'_'+self.original_filename}.csv"
-                )
-                with open(filepath, "a+", newline="") as f:
-                    writer = csv.writer(f)
-                    for line in items:
-                        line = " ".join(line.split("  ")).split()
-                        writer.writerow(line)
+            if index != 0 and (
+                ("STU ID" not in row) and ("NaN" not in row)
+            ):  # Skipping because the first element is blank for some reason.
+                row = row[2:]
+                if "roll" in row.lower():
+                    rollType = row[len(row) - 32 :: 1].strip().replace(" ", "").lower()
+                    currentRoll = rollType
+                    continue
+                if "WARNING MESSAGES" in row:
+                    warning_page = True
+                items = list(filter(lambda x: len(x) > 2, row.split("               ")))
+                if warning_page is False:
+                    self.write_to_csv(items, currentRoll)
+
+    def write_to_csv(self, items: list, current_roll):
+        filepath = f"{self.output_path+'/'+current_roll+'_'+self.original_filename}.csv"
+        with open(filepath, "a+", newline="") as f:
+            writer = csv.writer(f)
+            for line in items:
+                line = " ".join(line.split("  ")).split()
+                writer.writerow(line)
 
     def create_output_files(self):
-        for type in self._files:
+        for type in self.FILES:
             if type == "totals":
                 continue
             filepath = (
@@ -107,7 +105,7 @@ class Excel_convert:
                 + "."
                 + self.output_type
             )
-            with open(filepath, "a") as setup_file:
+            with open(filepath, "a", newline="") as setup_file:
                 if self.output_type == "csv":
                     writer = csv.writer(setup_file)
                     header = ["STU ID", " GR-HR", "STUDENT NAME"]
@@ -117,16 +115,17 @@ class Excel_convert:
 
     def Line_counter(self):
         with open(f"{self.output_path}/totals_{self.original_filename}.txt", "a") as f1:
-            for item in self._files:
+            for item in self.FILES:
                 fileName = item.replace(" ", "").lower() + "_" + self.original_filename
                 if "totals" in fileName:
                     continue
-                print(f"{self.output_path}/{fileName}")
                 try:
                     with open(
                         f"{self.output_path}/{fileName}.{self.output_type}", "r"
                     ) as f2:
-                        amountOfLines = len(f2.readlines()) - 2
+                        amountOfLines = (
+                            len(f2.readlines()) - 1
+                        )  # Subtract 1 for the header
                         print(f"{item}: {amountOfLines}", file=f1)
                 except FileNotFoundError:
                     print(f"{item}: 0", file=f1)
