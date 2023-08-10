@@ -129,7 +129,7 @@ window = tk.Tk()
 
 
 window.title("Val's App")
-window.geometry("1000x900")
+window.geometry("800x900")
 window.resizable(False, False)
 
 window_width = int(window.winfo_screenmmwidth())
@@ -148,7 +148,7 @@ instructions_frame = tk.Frame(
 
 # Setup Buttons Frame
 setup_buttons_frame = tk.Frame(
-    window, borderwidth=5, width=int(window_width * 1.2), height=100
+    window, borderwidth=5, width=int(window_width * 1.4), height=100
 )
 setup_buttons_frame.pack_propagate(False)
 
@@ -166,7 +166,6 @@ placeholder_frame.pack_propagate(False)
 table_label_frame = tk.Frame(
     placeholder_frame, width=int(window_width * 1.2), height=40, relief="groove"
 )
-
 table_label_frame.pack_propagate(False)
 
 # Frame for Radio Buttons
@@ -175,7 +174,7 @@ radio_frame.pack_propagate(False)
 
 # Frame for Start and Delete Buttons
 del_and_start_buttons_frame = tk.Frame(
-    window, width=int(window_width * 1.2), height=50, relief="groove"
+    window, width=int(window_width * 2), height=50, relief="groove"
 )
 del_and_start_buttons_frame.pack_propagate(False)
 
@@ -316,15 +315,15 @@ instructions_label1.pack()
 instructions_label2.pack(side="bottom")
 
 # 2nd Frame - Upload button, directory button, output type radio buttons
-setup_buttons_frame.pack()
+setup_buttons_frame.pack(expand=True)
 get_files_button.pack(side="left")
-set_directory_button.pack(side="left", padx=100)
+set_directory_button.pack(side="left", padx=10)
 radio_frame.pack(pady=20, side="left")
 txt_radio_button.pack()
 csv_radio_button.pack()
 
 # 3rd Frame - Output location labels
-output_files_label_frame.pack()
+output_files_label_frame.pack(expand=True)
 output_labels_frame_label.pack(side="left")
 directory_label.pack(side="right")
 
