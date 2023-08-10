@@ -70,7 +70,7 @@ def start_button_func():
             raise
         pass
     for file_name, path in files.files_dict.items():
-        converter = ec.Excel_convert(
+        converter = ec.ExcelConvert(
             files.output_location, file_name.split(".")[0], files.output_type
         )
         converter.create_output_files()
