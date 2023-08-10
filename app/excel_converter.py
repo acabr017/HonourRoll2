@@ -55,12 +55,15 @@ class ExcelConvert:
                     warning_page = True
                 items = list(filter(lambda x: len(x) > 2, row.split("               ")))
                 if warning_page is False:
-                    for val in items:
-                        with open(
-                            f"{self.output_path+'/'+currentRoll+'_'+self.original_filename}.txt",
-                            "a",
-                        ) as f:
-                            print(val.strip(), file=f)
+                    self.write_to_text(items, currentRoll)
+
+    def write_to_text(self, items: list, current_roll):
+        for val in items:
+            with open(
+                f"{self.output_path+'/'+current_roll+'_'+self.original_filename}.txt",
+                "a",
+            ) as f:
+                print(val.strip(), file=f)
 
     def Excel_to_csv(self, sheet_as_string: str):
         currentRoll = ""
@@ -79,12 +82,15 @@ class ExcelConvert:
                     warning_page = True
                 items = list(filter(lambda x: len(x) > 2, row.split("               ")))
                 if warning_page is False:
-                    filepath = f"{self.output_path+'/'+currentRoll+'_'+self.original_filename}.csv"
-                    with open(filepath, "a+", newline="") as f:
-                        writer = csv.writer(f)
-                        for line in items:
-                            line = " ".join(line.split("  ")).split()
-                            writer.writerow(line)
+                    self.write_to_csv(items, currentRoll)
+
+    def write_to_csv(self, items: list, current_roll):
+        filepath = f"{self.output_path+'/'+current_roll+'_'+self.original_filename}.csv"
+        with open(filepath, "a+", newline="") as f:
+            writer = csv.writer(f)
+            for line in items:
+                line = " ".join(line.split("  ")).split()
+                writer.writerow(line)
 
     def create_output_files(self):
         for type in self.FILES:
